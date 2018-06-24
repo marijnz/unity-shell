@@ -1,8 +1,11 @@
 # unity-shell
-Write and execute code in an intuitive "shell" with autocompletion, for the Unity Editor.  
+Write and execute code in an intuitive "shell" with autocompletion, for the Unity Editor.
   
 Any feedback or suggestions? Just write me, create an Issue or a PR ;)  
 
 _How it looks and works like:_
 
-![Imgur](https://i.imgur.com/Ek1KBJb.gif)
+![Imgur](https://i.imgur.com/fMmHDvH.gif)
+
+
+Inspired by [UniShell](https://github.com/rje/unishell)
