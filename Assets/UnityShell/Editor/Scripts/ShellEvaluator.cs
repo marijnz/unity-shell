@@ -31,19 +31,17 @@ namespace UnityShell
 				command += ";";
 			}
 
-			object outResult;
-			bool isResultSet;
+            var compilationResult = Evaluator.Compile(command);
+            if (compilationResult == null)
+            {
+                return "Compilation failed for input: " + command;
+            }
 
-			object result = Evaluator.Evaluate(command, out outResult, out isResultSet);
+            object result = null;
+            compilationResult(ref result);
 
-			if(isResultSet)
-			{
-				result = outResult;
-			}
-			else
-			{
-				result = "invalid input " + result;
-			}
+            if (result == null)
+                result = "Executed command: " + command;
 			return result;
 		}
 	}
