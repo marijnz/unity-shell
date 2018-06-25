@@ -145,11 +145,11 @@ namespace UnityShell
 				ScheduleMoveCursorToEnd();
 			}
 
+			EnsureNotAboutToTypeAtInvalidPosition();
 			autocompleteBox.HandleEvents();
 			HandleHistory();
 			DoAutoComplete();
 			HandleRequests();
-			EnsureCursorAtValidPosition();
 			DrawAll();
 		}
 
@@ -259,16 +259,22 @@ namespace UnityShell
 			lastCursorPos = cursorPos;
 		}
 
-		void EnsureCursorAtValidPosition()
+		void EnsureNotAboutToTypeAtInvalidPosition()
 		{
-			var lastIndexCommand = text.LastIndexOf(CommandName, StringComparison.Ordinal);
+			var current = Event.current;
 
-			if(textEditor.cursorIndex < lastIndexCommand)
+			if(current.isKey && !current.command && !current.control)
 			{
-				var toIndex = lastIndexCommand + CommandName.Length;
-				if(toIndex < text.Length)
+				var lastIndexCommand = text.LastIndexOf(CommandName, StringComparison.Ordinal) + CommandName.Length;
+
+				var cursorIndex = textEditor.cursorIndex;
+				if(current.keyCode == KeyCode.Backspace)
+					cursorIndex--;
+
+				if(cursorIndex < lastIndexCommand)
 				{
-					textEditor.cursorIndex = toIndex;
+					ScheduleMoveCursorToEnd();
+					current.Use();
 				}
 			}
 		}
@@ -353,7 +359,7 @@ namespace UnityShell
 
 		void Append(object result)
 		{
-			text += result + "\n";
+			text += "\n" + result + "\n";
 		}
 	}
 }
