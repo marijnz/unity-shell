@@ -6,7 +6,9 @@ namespace UnityShell
 	[Serializable]
 	public class ShellEvaluator
 	{
-		Evaluator evaluator;
+#if NET_4_6 || NET_STANDARD_2_0
+		Evaluator evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter()));
+#endif
 
 		public ShellEvaluator()
 		{
@@ -14,14 +16,22 @@ namespace UnityShell
 			{
 				try
 				{
+#if NET_4_6 || NET_STANDARD_2_0
+					evaluator.ReferenceAssembly(assembly);
+#else
 					Evaluator.ReferenceAssembly(assembly);
+#endif
 				}
 				catch (Exception)
 				{
 					// ignored
 				}
 			}
+#if NET_4_6 || NET_STANDARD_2_0
+			evaluator.Run ("using UnityEngine; using UnityEditor; using System; using System.Collections.Generic;");
+#else
 			Evaluator.Run ("using UnityEngine; using UnityEditor; using System; using System.Collections.Generic;");
+#endif
 		}
 
 		public object Evaluate(string command)
@@ -31,7 +41,11 @@ namespace UnityShell
 				command += ";";
 			}
 
+#if NET_4_6 || NET_STANDARD_2_0
+			var compilationResult = evaluator.Compile(command);
+#else
 			var compilationResult = Evaluator.Compile(command);
+#endif
 			if (compilationResult == null)
 			{
 				return "Compilation failed";
