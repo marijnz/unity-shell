@@ -11,7 +11,15 @@ namespace UnityShell
 		static class Styles
 		{
 			public static readonly GUIStyle textAreaStyle;
-
+			// Default background Color(0.76f, 0.76f, 0.76f)
+			public static Color BgColorLightSkin = new Color(0.87f, 0.87f, 0.87f);
+			// Default background Color(0.22f, 0.22f, 0.22f)
+			public static Color BgColorDarkSkin = new Color(0.11f, 0.11f, 0.11f);
+			// Default text Color(0.0f, 0.0f, 0.0f)
+			public static Color TextColorLightSkin = new Color(0.0f, 0.0f, 0.0f);
+			// Default text Color(0.706f, 0.706f, 0.706f)
+			public static Color TextColorDarkSkin = new Color(0.706f, 0.706f, 0.706f);
+			
 			static Texture2D _backgroundTexture;
 			public static Texture2D backgroundTexture
 			{
@@ -19,8 +27,8 @@ namespace UnityShell
 				{
 					if(_backgroundTexture == null)
 					{
-						_backgroundTexture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-						_backgroundTexture.SetPixel(0, 0, new Color(.18f, .18f, .18f));
+						_backgroundTexture = new Texture2D(1, 1, TextureFormat.RGBA32, false, true);
+						_backgroundTexture.SetPixel(0, 0, EditorGUIUtility.isProSkin?BgColorDarkSkin:BgColorLightSkin);
 						_backgroundTexture.Apply();
 					}
 					return _backgroundTexture;
@@ -34,7 +42,7 @@ namespace UnityShell
 
 				var style = textAreaStyle.focused;
 				style.background = backgroundTexture;
-				style.textColor = new Color(.7f, .7f, .7f);
+				style.textColor = EditorGUIUtility.isProSkin ? TextColorDarkSkin : TextColorLightSkin;
 
 				textAreaStyle.focused = style;
 				textAreaStyle.active = style;
