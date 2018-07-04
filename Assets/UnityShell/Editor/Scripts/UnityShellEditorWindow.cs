@@ -13,13 +13,13 @@ namespace UnityShell
 			public static readonly GUIStyle textAreaStyle;
 
 			// Default background Color(0.76f, 0.76f, 0.76f)
-			private static readonly Color BgColorLightSkin = new Color(0.87f, 0.87f, 0.87f);
+			private static readonly Color bgColorLightSkin = new Color(0.87f, 0.87f, 0.87f);
 			// Default background Color(0.22f, 0.22f, 0.22f)
-			private static readonly Color BgColorDarkSkin = new Color(0.11f, 0.11f, 0.11f);
+			private static readonly Color bgColorDarkSkin = new Color(0.2f, 0.2f, 0.2f);
 			// Default text Color(0.0f, 0.0f, 0.0f)
-			private static readonly Color TextColorLightSkin = new Color(0.0f, 0.0f, 0.0f);
+			private static readonly Color textColorLightSkin = new Color(0.0f, 0.0f, 0.0f);
 			// Default text Color(0.706f, 0.706f, 0.706f)
-			private static readonly Color TextColorDarkSkin = new Color(0.706f, 0.706f, 0.706f);
+			private static readonly Color textColorDarkSkin = new Color(0.706f, 0.706f, 0.706f);
 			
 			static Texture2D _backgroundTexture;
 			public static Texture2D backgroundTexture
@@ -29,7 +29,7 @@ namespace UnityShell
 					if(_backgroundTexture == null)
 					{
 						_backgroundTexture = new Texture2D(1, 1, TextureFormat.RGBA32, false, true);
-						_backgroundTexture.SetPixel(0, 0, EditorGUIUtility.isProSkin ? BgColorDarkSkin : BgColorLightSkin);
+						_backgroundTexture.SetPixel(0, 0, EditorGUIUtility.isProSkin ? bgColorDarkSkin : bgColorLightSkin);
 						_backgroundTexture.Apply();
 					}
 					return _backgroundTexture;
@@ -43,7 +43,7 @@ namespace UnityShell
 
 				var style = textAreaStyle.focused;
 				style.background = backgroundTexture;
-				style.textColor = EditorGUIUtility.isProSkin ? TextColorDarkSkin : TextColorLightSkin;
+				style.textColor = EditorGUIUtility.isProSkin ? textColorDarkSkin : textColorLightSkin;
 
 				textAreaStyle.focused = style;
 				textAreaStyle.active = style;
