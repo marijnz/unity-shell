@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Mono.CSharp;
 using UnityEditor;
 using UnityEngine;
 using Event = UnityEngine.Event;
@@ -66,10 +65,6 @@ namespace UnityShell
 				textEditor.text = value;
 			}
 		}
-		
-#if NET_4_6 || NET_STANDARD_2_0
-		private Evaluator evaluator;
-#endif
 
 		[SerializeField]
 		AutocompleteBox autocompleteBox;
