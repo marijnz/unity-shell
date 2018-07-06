@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Event = UnityEngine.Event;
 
 namespace UnityShell
 {
