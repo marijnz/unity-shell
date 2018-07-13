@@ -6,8 +6,6 @@ namespace UnityShell
 	[Serializable]
 	public class ShellEvaluator
 	{
-		Evaluator evaluator;
-
 		public ShellEvaluator()
 		{
 			foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
