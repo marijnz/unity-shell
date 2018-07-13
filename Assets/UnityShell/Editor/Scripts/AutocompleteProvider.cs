@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using Mono.CSharp;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace UnityShell
 {
