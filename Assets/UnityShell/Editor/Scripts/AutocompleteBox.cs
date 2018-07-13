@@ -7,7 +7,7 @@ namespace UnityShell
 	[Serializable]
 	public class AutocompleteBox
 	{
-		static class Styles
+		private static class Styles
 		{
 			public const float resultHeight = 20f;
 			public const float resultsBorderWidth = 2f;
@@ -36,7 +36,7 @@ namespace UnityShell
 			}
 		}
 
-		const int HintToNextCompletionHeight = 7;
+		private const int HintToNextCompletionHeight = 7;
 
 		public Action<string> onConfirm;
 		public int maxResults = 10;
@@ -45,17 +45,17 @@ namespace UnityShell
 		public string[] results = new string[0];
 
 		[SerializeField]
-		Vector2 scrollPos;
+		private Vector2 scrollPos;
 
 		[SerializeField]
-		int selectedIndex = -1;
+		private int selectedIndex = -1;
 
 		[SerializeField]
-		int visualIndex = -1;
+		private int visualIndex = -1;
 
-		bool showResults;
+		private bool showResults;
 
-		string searchString;
+		private string searchString;
 
 		public void Clear()
 		{
@@ -65,7 +65,10 @@ namespace UnityShell
 
 		public void OnGUI(string result, Rect rect)
 		{
-			if(results == null) results = new string[0];
+			if (results == null)
+			{
+				results = new string[0];
+			}
 
 			if (result != searchString)
 			{
@@ -80,7 +83,10 @@ namespace UnityShell
 
 		public void HandleEvents()
 		{
-			if(results.Length == 0) return;
+			if (results.Length == 0)
+			{
+				return;
+			}
 
 			var current = Event.current;
 
@@ -100,20 +106,29 @@ namespace UnityShell
 					current.Use();
 					selectedIndex++;
 				}
-				else if(current.keyCode == KeyCode.Return && selectedIndex >= 0)
+				else if (current.keyCode == KeyCode.Return && selectedIndex >= 0)
 				{
 					current.Use();
 					OnConfirm(results[selectedIndex]);
 				}
 
-				if (selectedIndex >= results.Length) selectedIndex = 0;
-				else if (selectedIndex < 0) selectedIndex = results.Length - 1;
+				if (selectedIndex >= results.Length)
+				{
+					selectedIndex = 0;
+				}
+				else if (selectedIndex < 0)
+				{
+					selectedIndex = results.Length - 1;
+				}
 			}
 		}
 
-		void DoResults(Rect drawRect)
+		private void DoResults(Rect drawRect)
 		{
-			if(results.Length <= 0 || !showResults) return;
+			if (results.Length <= 0 || !showResults)
+			{
+				return;
+			}
 
 			var current = Event.current;
 			drawRect.height = Styles.resultHeight * Mathf.Min(maxResults, results.Length);
@@ -123,7 +138,7 @@ namespace UnityShell
 			drawRect.height += Styles.resultsBorderWidth;
 
 			var backgroundRect = drawRect;
-			if(results.Length > maxResults)
+			if (results.Length > maxResults)
 			{
 				backgroundRect.height += HintToNextCompletionHeight + Styles.resultsBorderWidth;
 			}
@@ -154,13 +169,13 @@ namespace UnityShell
 				elementRect.x = Styles.resultsBorderWidth;
 				elementRect.y = 0;
 
-				if(results.Length > maxResults)
+				if (results.Length > maxResults)
 				{
 					elementRect.y = -visualIndex * Styles.resultHeight;
 
 					var maxPos = GetTotalResultsShown(clipRect) * Styles.resultHeight - HintToNextCompletionHeight;
 
-					if(-elementRect.y > maxPos)
+					if (-elementRect.y > maxPos)
 					{
 						elementRect.y = -maxPos;
 					}
@@ -168,7 +183,7 @@ namespace UnityShell
 
 				for (var i = 0; i < results.Length; i++)
 				{
-					if(current.type == EventType.Repaint)
+					if (current.type == EventType.Repaint)
 					{
 						var style = i % 2 == 0 ? Styles.entryOdd : Styles.entryEven;
 
@@ -181,7 +196,7 @@ namespace UnityShell
 					elementRect.y += Styles.resultHeight;
 				}
 
-				if(results.Length > maxResults)
+				if (results.Length > maxResults)
 				{
 					DrawScroll(clipRect);
 				}
@@ -189,7 +204,7 @@ namespace UnityShell
 			GUI.EndClip();
 		}
 
-		void DrawScroll(Rect clipRect)
+		private void DrawScroll(Rect clipRect)
 		{
 			var scrollRect = clipRect;
 			scrollRect.x += scrollRect.width - 30;
@@ -197,14 +212,14 @@ namespace UnityShell
 
 			var resultsShown = GetTotalResultsShown(clipRect);
 
-			scrollRect.height =  ((float) maxResults / resultsShown * clipRect.height);
+			scrollRect.height = ((float) maxResults / resultsShown * clipRect.height);
 
 			scrollRect.y = ((float) visualIndex / (resultsShown)) * (clipRect.height - scrollRect.height);
 
 			GUI.Box(scrollRect, GUIContent.none, Styles.sliderStyle);
 		}
 
-		int GetTotalResultsShown(Rect clipRect)
+		private int GetTotalResultsShown(Rect clipRect)
 		{
 			// Actual scrolling is a bit less as there's also the view itself in which is not scrolled,
 			// when moving down initially, for example.
@@ -213,7 +228,7 @@ namespace UnityShell
 			return resultsShown;
 		}
 
-		void UpdateVisualIndex(Rect clipRect)
+		private void UpdateVisualIndex(Rect clipRect)
 		{
 			var ySelectedPos = selectedIndex * Styles.resultHeight;
 			var yVisualPos = visualIndex * Styles.resultHeight;
@@ -226,27 +241,30 @@ namespace UnityShell
 			var diffMax = ySelectedPos - (yVisualPos + max) + Styles.resultHeight;
 			var diffMin = (yVisualPos + min) - ySelectedPos;
 
-			if(diffMax > 0)
+			if (diffMax > 0)
 			{
-				visualIndex +=  Mathf.CeilToInt(diffMax / Styles.resultHeight);
+				visualIndex += Mathf.CeilToInt(diffMax / Styles.resultHeight);
 			}
-			else if(diffMin > 0)
+			else if (diffMin > 0)
 			{
-				visualIndex -=  Mathf.CeilToInt(diffMin / Styles.resultHeight);
+				visualIndex -= Mathf.CeilToInt(diffMin / Styles.resultHeight);
 			}
 		}
 
-		void OnConfirm(string result)
+		private void OnConfirm(string result)
 		{
-			if(onConfirm != null) onConfirm(result);
+			if (onConfirm != null)
+			{
+				onConfirm(result);
+			}
 			RepaintFocusedWindow();
 			showResults = false;
 			searchString = result;
 		}
 
-		static void RepaintFocusedWindow()
+		private static void RepaintFocusedWindow()
 		{
-			if(EditorWindow.focusedWindow != null)
+			if (EditorWindow.focusedWindow != null)
 			{
 				EditorWindow.focusedWindow.Repaint();
 			}
