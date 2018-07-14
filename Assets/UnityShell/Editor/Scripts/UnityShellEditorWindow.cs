@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -76,13 +75,10 @@ namespace UnityShell
 		}
 
 		[SerializeField]
-		ShellEvaluator evaluator;
-
-		[SerializeField]
 		AutocompleteBox autocompleteBox;
 
 		[SerializeField]
-		AutocompleteProvider autocompleteProvider;
+		ShellEvaluator shellEvaluator;
 
 		[SerializeField]
 		Vector2 scrollPos = Vector2.zero;
@@ -112,7 +108,7 @@ namespace UnityShell
 			ClearText();
 			requestFocusOnTextArea = true;
 
-			autocompleteProvider = new AutocompleteProvider();
+			shellEvaluator = new ShellEvaluator();
 			autocompleteBox = new AutocompleteBox();
 		}
 
@@ -126,7 +122,6 @@ namespace UnityShell
 
 		void OnEnable()
 		{
-			new Thread(() => evaluator = new ShellEvaluator()).Start();
 			ScheduleMoveCursorToEnd();
 			autocompleteBox.onConfirm += OnAutocompleteConfirm;
 			autocompleteBox.Clear();
@@ -224,7 +219,7 @@ namespace UnityShell
 					lastWord = input.Substring(lastWordIndex + 1);
 				}
 
-				autocompleteProvider.SetInput(lastWord);
+				shellEvaluator.SetInput(lastWord);
 			}
 		}
 
@@ -308,7 +303,7 @@ namespace UnityShell
 			}
 			EditorGUILayout.EndScrollView();
 
-			autocompleteBox.results = autocompleteProvider.completions;
+			autocompleteBox.results = shellEvaluator.completions;
 			var pos = textEditor.graphicalCursorPos;
 			var rect = new Rect(pos.x, pos.y, 300, 200);
 			rect.y += 34;
@@ -328,7 +323,7 @@ namespace UnityShell
 					textEditor.MoveTextEnd();
 					try
 					{
-						var result = evaluator.Evaluate(input);
+						var result = shellEvaluator.Evaluate(input);
 						Append(result);
 						inputHistory.Add(input);
 						positionInHistory = inputHistory.Count;
