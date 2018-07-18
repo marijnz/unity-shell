@@ -8,7 +8,6 @@ namespace UnityShell
 	[Serializable]
 	public class ShellEvaluator
 	{
-		private Evaluator evaluator;
 		public string[] completions;
 
 		private int handleCount;
