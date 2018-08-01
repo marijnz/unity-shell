@@ -10,7 +10,7 @@ namespace UnityShell
 	{
 		public string[] completions;
 
-		int handleCount;
+		private int handleCount;
 		
 #if NET_4_6 || NET_STANDARD_2_0
 		public Evaluator evaluator;
@@ -25,11 +25,23 @@ namespace UnityShell
 		{
 #if NET_4_6 || NET_STANDARD_2_0
 			evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter()));
-			AppDomain.CurrentDomain.GetAssemblies().ToList().ForEach(asm => {try {evaluator.ReferenceAssembly(asm);}catch{}});
+			AppDomain.CurrentDomain.GetAssemblies().ToList().ForEach(asm => {
+				try
+				{
+					evaluator.ReferenceAssembly(asm);
+				}
+				catch { }
+			});
 			evaluator.Run("using UnityEngine; using UnityEditor; using System; using System.Collections.Generic;");
 #else
-			AppDomain.CurrentDomain.GetAssemblies().ToList().ForEach(asm => {try {Evaluator.ReferenceAssembly(asm);}catch{}});
-			Evaluator.Run ("using UnityEngine; using UnityEditor; using System; using System.Collections.Generic;");
+			AppDomain.CurrentDomain.GetAssemblies().ToList().ForEach(asm => {
+				try
+				{
+					Evaluator.ReferenceAssembly(asm);
+				}
+				catch { }
+			});
+			Evaluator.Run("using UnityEngine; using UnityEditor; using System; using System.Collections.Generic;");
 #endif
 		}
 
@@ -47,7 +59,7 @@ namespace UnityShell
 			{
 				int handle = handleCount;
 
-				if(!string.IsNullOrEmpty(input))
+				if (!string.IsNullOrEmpty(input))
 				{
 					string prefix;
 #if NET_4_6 || NET_STANDARD_2_0
@@ -57,7 +69,7 @@ namespace UnityShell
 #endif
 
 					// Avoid old threads overriding with old results
-					if(handle == handleCount)
+					if (handle == handleCount)
 					{
 						completions = result;
 						if (completions == null)
@@ -69,7 +81,7 @@ namespace UnityShell
 							completions[i] = input + completions[i];
 						}
 
-						if(completions.Length == 1 && completions[0].Trim() == input.Trim())
+						if (completions.Length == 1 && completions[0].Trim() == input.Trim())
 						{
 							completions = new string[0];
 						}
@@ -91,7 +103,7 @@ namespace UnityShell
 			}
 #endif
 
-			if(!command.EndsWith(";"))
+			if (!command.EndsWith(";"))
 			{
 				command += ";";
 			}
@@ -110,7 +122,9 @@ namespace UnityShell
 			compilationResult(ref result);
 
 			if (result == null)
+			{
 				result = "Executed code successfully";
+			}
 			return result;
 		}
 	}

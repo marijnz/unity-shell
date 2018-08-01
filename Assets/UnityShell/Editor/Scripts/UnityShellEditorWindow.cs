@@ -7,7 +7,7 @@ namespace UnityShell
 {
 	public class UnityShellEditorWindow : EditorWindow
 	{
-		static class Styles
+		private static class Styles
 		{
 			public static readonly GUIStyle textAreaStyle;
 
@@ -20,12 +20,12 @@ namespace UnityShell
 			// Default text Color(0.706f, 0.706f, 0.706f)
 			private static readonly Color textColorDarkSkin = new Color(0.706f, 0.706f, 0.706f);
 			
-			static Texture2D _backgroundTexture;
+			private static Texture2D _backgroundTexture;
 			public static Texture2D backgroundTexture
 			{
 				get
 				{
-					if(_backgroundTexture == null)
+					if (_backgroundTexture == null)
 					{
 						_backgroundTexture = new Texture2D(1, 1, TextureFormat.RGBA32, false, true);
 						_backgroundTexture.SetPixel(0, 0, EditorGUIUtility.isProSkin ? bgColorDarkSkin : bgColorLightSkin);
@@ -54,15 +54,15 @@ namespace UnityShell
 		}
 
 		[MenuItem("Window/UnityShell #%u")]
-		static void CreateWindow()
+		private static void CreateWindow()
 		{
 			GetWindow<UnityShellEditorWindow>("UnityShell");
 		}
 
-		const string ConsoleTextAreaControlName = "ConsoleTextArea";
-		const string CommandName = "command > ";
+		private const string ConsoleTextAreaControlName = "ConsoleTextArea";
+		private const string CommandName = "command > ";
 
-		string text
+		private string text
 		{
 			get
 			{
@@ -75,35 +75,35 @@ namespace UnityShell
 		}
 
 		[SerializeField]
-		AutocompleteBox autocompleteBox;
+		private AutocompleteBox autocompleteBox;
 
 		[SerializeField]
-		ShellEvaluator shellEvaluator;
+		private ShellEvaluator shellEvaluator;
 
 		[SerializeField]
-		Vector2 scrollPos = Vector2.zero;
+		private Vector2 scrollPos = Vector2.zero;
 
 		[SerializeField]
-		TextEditor textEditor;
+		private TextEditor textEditor;
 
 		[SerializeField]
-		List<string> inputHistory = new List<string>();
+		private List<string> inputHistory = new List<string>();
 
-		bool requestMoveToCursorToEnd;
-		bool requestFocusOnTextArea;
+		private bool requestMoveToCursorToEnd;
+		private bool requestFocusOnTextArea;
 
-		bool requestRevertNewLine;
+		private bool requestRevertNewLine;
 
-		string input = "";
-		string lastWord = "";
+		private string input = "";
+		private string lastWord = "";
 
-		Vector2 lastCursorPos;
+		private Vector2 lastCursorPos;
 
-		int positionInHistory;
+		private int positionInHistory;
 
-		string savedInput;
+		private string savedInput;
 
-		void Awake()
+		private void Awake()
 		{
 			ClearText();
 			requestFocusOnTextArea = true;
@@ -112,22 +112,22 @@ namespace UnityShell
 			autocompleteBox = new AutocompleteBox();
 		}
 
-		void ClearText()
+		private void ClearText()
 		{
-			if(textEditor != null)
+			if (textEditor != null)
 			{
 				text = "";
 			}
 		}
 
-		void OnEnable()
+		private void OnEnable()
 		{
 			ScheduleMoveCursorToEnd();
 			autocompleteBox.onConfirm += OnAutocompleteConfirm;
 			autocompleteBox.Clear();
 		}
 
-		void OnAutocompleteConfirm(string confirmedInput)
+		private void OnAutocompleteConfirm(string confirmedInput)
 		{
 			text = text.Substring(0, text.Length - lastWord.Length);
 			text += confirmedInput;
@@ -135,15 +135,15 @@ namespace UnityShell
 			requestRevertNewLine = true;
 		}
 
-		void OnInspectorUpdate()
+		private void OnInspectorUpdate()
 		{
 			Repaint();
 		}
 
-		void OnGUI()
+		private void OnGUI()
 		{
 			textEditor = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-			if(text == "")
+			if (text == "")
 			{
 				AppendStartCommand();
 				ScheduleMoveCursorToEnd();
@@ -157,34 +157,37 @@ namespace UnityShell
 			DrawAll();
 		}
 
-		void HandleHistory()
+		private void HandleHistory()
 		{
 			var current = Event.current;
-			if(current.type == EventType.KeyDown)
+			if (current.type == EventType.KeyDown)
 			{
 				var changed = false;
-				if(current.keyCode == KeyCode.DownArrow)
+				if (current.keyCode == KeyCode.DownArrow)
 				{
 					positionInHistory++;
 					changed = true;
 					current.Use();
 				}
-				if(current.keyCode == KeyCode.UpArrow)
+				if (current.keyCode == KeyCode.UpArrow)
 				{
 					positionInHistory--;
 					changed = true;
 					current.Use();
 				}
 
-				if(changed)
+				if (changed)
 				{
-					if(savedInput == null)
+					if (savedInput == null)
 					{
 						savedInput = input;
 					}
 
-					if(positionInHistory < 0) positionInHistory = 0;
-					else if(positionInHistory >= inputHistory.Count)
+					if (positionInHistory < 0)
+					{
+						positionInHistory = 0;
+					}
+					else if (positionInHistory >= inputHistory.Count)
 					{
 						ReplaceCurrentCommand(savedInput);
 						positionInHistory = inputHistory.Count;
@@ -198,14 +201,14 @@ namespace UnityShell
 			}
 		}
 
-		void ReplaceCurrentCommand(string replacement)
+		private void ReplaceCurrentCommand(string replacement)
 		{
 			text = text.Substring(0, text.Length - input.Length);
 			text += replacement;
 			textEditor.MoveTextEnd();
 		}
 
-		void DoAutoComplete()
+		private void DoAutoComplete()
 		{
 			var newInput = GetInput();
 			if (newInput != null && input != newInput && !requestRevertNewLine)
@@ -223,7 +226,7 @@ namespace UnityShell
 			}
 		}
 
-		string GetInput()
+		private string GetInput()
 		{
 			var commandStartIndex = text.LastIndexOf(CommandName, StringComparison.Ordinal);
 			if (commandStartIndex != -1)
@@ -234,7 +237,7 @@ namespace UnityShell
 			return null;
 		}
 
-		void HandleRequests()
+		private void HandleRequests()
 		{
 			var current = Event.current;
 			if (requestMoveToCursorToEnd && current.type == EventType.Repaint)
@@ -263,19 +266,22 @@ namespace UnityShell
 			lastCursorPos = cursorPos;
 		}
 
-		void EnsureNotAboutToTypeAtInvalidPosition()
+		private void EnsureNotAboutToTypeAtInvalidPosition()
 		{
 			var current = Event.current;
 
-			if(current.isKey && !current.command && !current.control)
+			if (current.isKey && !current.command && !current.control)
 			{
 				var lastIndexCommand = text.LastIndexOf(CommandName, StringComparison.Ordinal) + CommandName.Length;
 
 				var cursorIndex = textEditor.cursorIndex;
-				if(current.keyCode == KeyCode.Backspace)
+				if (current.keyCode == KeyCode.Backspace)
+				{
 					cursorIndex--;
 
-				if(cursorIndex < lastIndexCommand)
+				}
+
+				if (cursorIndex < lastIndexCommand)
 				{
 					ScheduleMoveCursorToEnd();
 					current.Use();
@@ -283,7 +289,7 @@ namespace UnityShell
 			}
 		}
 
-		void DrawAll()
+		private void DrawAll()
 		{
 			GUI.DrawTexture(new Rect(0, 0, maxSize.x, maxSize.y), Styles.backgroundTexture, ScaleMode.StretchToFill);
 			EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
@@ -310,15 +316,15 @@ namespace UnityShell
 			autocompleteBox.OnGUI(lastWord, rect);
 		}
 
-		void DrawConsole()
+		private void DrawConsole()
 		{
 			var current = Event.current;
 
-			if(current.type == EventType.KeyDown)
+			if (current.type == EventType.KeyDown)
 			{
 				ScrollDown();
 
-				if(current.keyCode == KeyCode.Return && !current.shift)
+				if (current.keyCode == KeyCode.Return && !current.shift)
 				{
 					textEditor.MoveTextEnd();
 					try
@@ -328,7 +334,7 @@ namespace UnityShell
 						inputHistory.Add(input);
 						positionInHistory = inputHistory.Count;
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						Debug.LogException(e);
 						Append(e.Message);
@@ -344,24 +350,24 @@ namespace UnityShell
 			GUILayout.TextArea(text, Styles.textAreaStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 		}
 
-		void ScrollDown()
+		private void ScrollDown()
 		{
 			scrollPos.y = float.MaxValue;
 		}
 
-		void AppendStartCommand()
+		private void AppendStartCommand()
 		{
 			text += CommandName;
 			ScheduleMoveCursorToEnd();
 		}
 
-		void ScheduleMoveCursorToEnd()
+		private void ScheduleMoveCursorToEnd()
 		{
 			requestMoveToCursorToEnd = true;
 			ScrollDown();
 		}
 
-		void Append(object result)
+		private void Append(object result)
 		{
 			text += "\n" + result + "\n";
 		}
