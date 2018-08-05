@@ -198,7 +198,7 @@ namespace UnityShell
             {
                 textEditor.selectIndex = textEditor.text.Length;
                 // Don't select the command start text
-                textEditor.cursorIndex = CommandName.Length;
+                textEditor.cursorIndex = text.LastIndexOf(CommandName, StringComparison.Ordinal) + CommandName.Length;
                 current.Use();
                 return;
             }
