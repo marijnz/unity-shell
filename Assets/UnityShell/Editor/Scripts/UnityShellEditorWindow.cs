@@ -143,7 +143,7 @@ namespace UnityShell
 		private void OnGUI()
 		{
 			textEditor = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-			if (text == "")
+			if (string.IsNullOrEmpty(text))
 			{
 				AppendStartCommand();
 				ScheduleMoveCursorToEnd();
@@ -322,7 +322,7 @@ namespace UnityShell
 				var lastIndexCommand = text.LastIndexOf(CommandName, StringComparison.Ordinal) + CommandName.Length;
 
 				var cursorIndex = textEditor.cursorIndex;
-				if (current.keyCode == KeyCode.Backspace)
+				if (current.keyCode == KeyCode.Backspace && !textEditor.hasSelection)
 				{
 					cursorIndex--;
 
