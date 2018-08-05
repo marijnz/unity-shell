@@ -150,6 +150,7 @@ namespace UnityShell
 			}
 
 			EnsureNotAboutToTypeAtInvalidPosition();
+            HandleTextCommands();
 			autocompleteBox.HandleEvents();
 			HandleHistory();
 			DoAutoComplete();
@@ -157,7 +158,53 @@ namespace UnityShell
 			DrawAll();
 		}
 
-		private void HandleHistory()
+        private void HandleTextCommands()
+        {
+            var current = Event.current;
+
+            if (current.type != EventType.ValidateCommand)
+            {
+                return;
+            }
+            
+            if (current.commandName == "Copy")
+            {
+                textEditor.Copy();
+                current.Use();
+                return;
+            }
+            
+            if (current.commandName == "Cut")
+            {
+                var success = textEditor.Cut();
+                if (success)
+                {
+                    current.Use();
+                }
+                return;
+            }
+            
+            if (current.commandName == "Paste")
+            {
+                var success = textEditor.Paste();
+                if (success)
+                {
+                    current.Use();
+                }
+                return;
+            }
+            
+            if (current.commandName == "SelectAll")
+            {
+                textEditor.selectIndex = textEditor.text.Length;
+                // Don't select the command start text
+                textEditor.cursorIndex = CommandName.Length;
+                current.Use();
+                return;
+            }
+        }
+
+        private void HandleHistory()
 		{
 			var current = Event.current;
 			if (current.type == EventType.KeyDown)
