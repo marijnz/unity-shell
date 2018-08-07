@@ -89,7 +89,7 @@ namespace UnityShell
 		[SerializeField]
 		private List<string> inputHistory = new List<string>();
 		private int positionInHistory;
-
+		
 		private bool requestMoveToCursorToEnd;
 		private bool requestFocusOnTextArea;
 		private bool requestRevertNewLine;
@@ -341,6 +341,7 @@ namespace UnityShell
 					}
 
 					AppendStartCommand();
+					ScheduleMoveCursorToEnd();
 
 					current.Use();
 				}
@@ -358,7 +359,6 @@ namespace UnityShell
 		private void AppendStartCommand()
 		{
 			text += CommandName;
-			ScheduleMoveCursorToEnd();
 		}
 
 		private void ScheduleMoveCursorToEnd()
