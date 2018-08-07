@@ -309,6 +309,7 @@ namespace UnityShell
 			EditorGUILayout.EndScrollView();
 
 			autocompleteBox.results = shellEvaluator.completions;
+
 			var pos = textEditor.graphicalCursorPos;
 			var rect = new Rect(pos.x, pos.y, 300, 200);
 			rect.y += 34;
