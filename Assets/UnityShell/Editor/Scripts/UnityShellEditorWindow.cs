@@ -90,7 +90,7 @@ namespace UnityShell
 		private List<string> inputHistory = new List<string>();
 		private int positionInHistory;
 		
-		private bool requestMoveToCursorToEnd;
+		private bool requestMoveCursorToEnd;
 		private bool requestFocusOnTextArea;
 		private bool requestRevertNewLine;
 
@@ -237,10 +237,10 @@ namespace UnityShell
 		private void HandleRequests()
 		{
 			var current = Event.current;
-			if (requestMoveToCursorToEnd && current.type == EventType.Repaint)
+			if (requestMoveCursorToEnd && current.type == EventType.Repaint)
 			{
 				textEditor.MoveTextEnd();
-				requestMoveToCursorToEnd = false;
+				requestMoveCursorToEnd = false;
 				Repaint();
 			}
 			else if (focusedWindow == this && requestFocusOnTextArea)
@@ -363,7 +363,7 @@ namespace UnityShell
 
 		private void ScheduleMoveCursorToEnd()
 		{
-			requestMoveToCursorToEnd = true;
+			requestMoveCursorToEnd = true;
 			ScrollDown();
 		}
 
