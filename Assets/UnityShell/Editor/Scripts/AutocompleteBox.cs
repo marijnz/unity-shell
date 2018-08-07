@@ -78,7 +78,7 @@ namespace UnityShell
 			}
 			searchString = result;
 
-			DoResults(rect);
+			DrawResults(rect);
 		}
 
 		public void HandleEvents()
@@ -125,7 +125,7 @@ namespace UnityShell
 			}
 		}
 
-		private void DoResults(Rect drawRect)
+		private void DrawResults(Rect drawRect)
 		{
 			if (results.Length <= 0 || !showResults)
 			{
