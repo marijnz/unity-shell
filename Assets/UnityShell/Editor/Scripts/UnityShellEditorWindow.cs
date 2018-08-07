@@ -142,7 +142,7 @@ namespace UnityShell
 
 		private void OnGUI()
 		{
-			textEditor = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+			textEditor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 			if (text == "")
 			{
 				AppendStartCommand();
@@ -278,7 +278,6 @@ namespace UnityShell
 				if (current.keyCode == KeyCode.Backspace)
 				{
 					cursorIndex--;
-
 				}
 
 				if (cursorIndex < lastIndexCommand)
