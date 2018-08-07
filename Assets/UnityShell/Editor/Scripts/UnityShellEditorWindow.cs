@@ -149,7 +149,7 @@ namespace UnityShell
 				ScheduleMoveCursorToEnd();
 			}
 
-			EnsureNotAboutToTypeAtInvalidPosition();
+			HandleInvalidTypePositions();
 			autocompleteBox.HandleEvents();
 			HandleHistory();
 			DoAutoComplete();
@@ -266,7 +266,10 @@ namespace UnityShell
 			lastCursorPos = cursorPos;
 		}
 
-		private void EnsureNotAboutToTypeAtInvalidPosition()
+		/// <summary>
+		/// Ensures not about to type at an invalid position.
+		/// </summary>
+		private void HandleInvalidTypePositions()
 		{
 			var current = Event.current;
 
