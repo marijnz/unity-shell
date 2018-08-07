@@ -88,20 +88,17 @@ namespace UnityShell
 
 		[SerializeField]
 		private List<string> inputHistory = new List<string>();
+		private int positionInHistory;
 
 		private bool requestMoveToCursorToEnd;
 		private bool requestFocusOnTextArea;
-
 		private bool requestRevertNewLine;
 
 		private string input = "";
 		private string lastWord = "";
+		private string savedInput;
 
 		private Vector2 lastCursorPos;
-
-		private int positionInHistory;
-
-		private string savedInput;
 
 		private void Awake()
 		{
