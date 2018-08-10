@@ -78,7 +78,7 @@ namespace UnityShell
 			}
 			searchString = result;
 
-			DoResults(rect);
+			DrawResults(rect);
 		}
 
 		public void HandleEvents()
@@ -92,24 +92,26 @@ namespace UnityShell
 
 			if (current.type == EventType.KeyDown)
 			{
-				if (current.keyCode == KeyCode.Escape)
+				switch (current.keyCode)
 				{
+				case KeyCode.Escape:
 					showResults = false;
-				}
-				if (current.keyCode == KeyCode.UpArrow)
-				{
+					break;
+				case KeyCode.UpArrow:
 					current.Use();
 					selectedIndex--;
-				}
-				else if (current.keyCode == KeyCode.DownArrow)
-				{
+					break;
+				case KeyCode.DownArrow:
 					current.Use();
 					selectedIndex++;
-				}
-				else if (current.keyCode == KeyCode.Return && selectedIndex >= 0)
-				{
-					current.Use();
-					OnConfirm(results[selectedIndex]);
+					break;
+				case KeyCode.Return:
+					if (selectedIndex >= 0)
+					{
+						current.Use();
+						OnConfirm(results[selectedIndex]);
+					}
+					break;
 				}
 
 				if (selectedIndex >= results.Length)
@@ -123,7 +125,7 @@ namespace UnityShell
 			}
 		}
 
-		private void DoResults(Rect drawRect)
+		private void DrawResults(Rect drawRect)
 		{
 			if (results.Length <= 0 || !showResults)
 			{

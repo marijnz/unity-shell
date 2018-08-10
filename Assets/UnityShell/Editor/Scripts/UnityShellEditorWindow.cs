@@ -88,20 +88,17 @@ namespace UnityShell
 
 		[SerializeField]
 		private List<string> inputHistory = new List<string>();
-
-		private bool requestMoveToCursorToEnd;
+		private int positionInHistory;
+		
+		private bool requestMoveCursorToEnd;
 		private bool requestFocusOnTextArea;
-
 		private bool requestRevertNewLine;
 
 		private string input = "";
 		private string lastWord = "";
+		private string savedInput;
 
 		private Vector2 lastCursorPos;
-
-		private int positionInHistory;
-
-		private string savedInput;
 
 		private void Awake()
 		{
@@ -142,14 +139,14 @@ namespace UnityShell
 
 		private void OnGUI()
 		{
-			textEditor = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+			textEditor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 			if (text == "")
 			{
 				AppendStartCommand();
 				ScheduleMoveCursorToEnd();
 			}
 
-			EnsureNotAboutToTypeAtInvalidPosition();
+			HandleInvalidTypePositions();
 			autocompleteBox.HandleEvents();
 			HandleHistory();
 			DoAutoComplete();
@@ -240,10 +237,10 @@ namespace UnityShell
 		private void HandleRequests()
 		{
 			var current = Event.current;
-			if (requestMoveToCursorToEnd && current.type == EventType.Repaint)
+			if (requestMoveCursorToEnd && current.type == EventType.Repaint)
 			{
 				textEditor.MoveTextEnd();
-				requestMoveToCursorToEnd = false;
+				requestMoveCursorToEnd = false;
 				Repaint();
 			}
 			else if (focusedWindow == this && requestFocusOnTextArea)
@@ -266,7 +263,10 @@ namespace UnityShell
 			lastCursorPos = cursorPos;
 		}
 
-		private void EnsureNotAboutToTypeAtInvalidPosition()
+		/// <summary>
+		/// Ensures not about to type at an invalid position.
+		/// </summary>
+		private void HandleInvalidTypePositions()
 		{
 			var current = Event.current;
 
@@ -278,7 +278,6 @@ namespace UnityShell
 				if (current.keyCode == KeyCode.Backspace)
 				{
 					cursorIndex--;
-
 				}
 
 				if (cursorIndex < lastIndexCommand)
@@ -310,6 +309,7 @@ namespace UnityShell
 			EditorGUILayout.EndScrollView();
 
 			autocompleteBox.results = shellEvaluator.completions;
+
 			var pos = textEditor.graphicalCursorPos;
 			var rect = new Rect(pos.x, pos.y, 300, 200);
 			rect.y += 34;
@@ -341,6 +341,7 @@ namespace UnityShell
 					}
 
 					AppendStartCommand();
+					ScheduleMoveCursorToEnd();
 
 					current.Use();
 				}
@@ -358,12 +359,11 @@ namespace UnityShell
 		private void AppendStartCommand()
 		{
 			text += CommandName;
-			ScheduleMoveCursorToEnd();
 		}
 
 		private void ScheduleMoveCursorToEnd()
 		{
-			requestMoveToCursorToEnd = true;
+			requestMoveCursorToEnd = true;
 			ScrollDown();
 		}
 
