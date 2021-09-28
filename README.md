@@ -7,7 +7,8 @@ _How it looks and works like:_
 
 ![Imgur](https://i.imgur.com/fMmHDvH.gif)
 
-## .NET 4.x Runtime support
-If your Unity project is using the .NET 4.x runtime (set in the Player Settings), you'll need to enable the Editor platform for Mono.CSharp.4.x.dll and disable it for Mono.CSharp.3.5.dll by selecting them in the Project view and modifying the Include Platforms in the Inspector.
+## Unity support after 2018
+
+You'll need to grab a copy of a Mono.CSharp.dll file matching the editor version. A copy can generally be found on most installations here: `[EditorPath]/Editor/Data/MonoBleedingEdge/lib/mono/4.5/Mono.CSharp.dll`
 
 Inspired by [UniShell](https://github.com/rje/unishell)
